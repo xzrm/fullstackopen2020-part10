@@ -5,6 +5,8 @@ import FormikTextInput from './FormikTextInput';
 import { Formik } from 'formik';
 import theme from '../theme';
 import * as yup from 'yup';
+import { useSignIn } from '../hooks/useSignIn';
+import AuthStorage from '../utils/authStorage';
 
 const styles = StyleSheet.create({
   contrainer: {
@@ -16,7 +18,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: 50,
     backgroundColor: theme.colors.primary,
-    textTransform: 'lowercase',
     borderRadius: 5,
 
   }
@@ -57,8 +58,21 @@ const SignInForm = ({ onSubmit }) => {
 
 const SignIn = () => {
 
-  const onSubmit = (values) => {
-    console.log(values);
+  const authStorage = new AuthStorage();
+  const [signIn] = useSignIn();
+
+  const onSubmit = async (values) => {
+    const { username, password } = values;
+
+    console.log(username, password);
+    try {
+      const { data } = await signIn({ username, password });
+      authStorage.setAccessToken(data.authorize.accessToken);
+    } catch (e) {
+      console.log(e);
+    }
+
+    console.log(authStorage.getAccessToken());
   };
 
   return (
@@ -66,7 +80,7 @@ const SignIn = () => {
       initialValues={initialValues}
       onSubmit={onSubmit}
       validationSchema={validationSchema}
-      >
+    >
       {({ handleSubmit }) => <SignInForm onSubmit={handleSubmit} />}
     </Formik>
   );
