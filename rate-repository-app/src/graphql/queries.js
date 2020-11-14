@@ -20,3 +20,12 @@ query {
 }
 `;
 
+export const AUTHORIZED_USER = gql`
+query {
+  authorizedUser {
+    id
+    username
+  }
+}
+`;
+
