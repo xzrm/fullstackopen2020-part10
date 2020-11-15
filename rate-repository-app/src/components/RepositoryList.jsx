@@ -1,8 +1,7 @@
 import React from 'react';
 import { FlatList, View, StyleSheet } from 'react-native';
 import RepositoryItem from './RepositoryItem';
-import { useQuery } from '@apollo/react-hooks';
-import { GET_REPOSITORIES } from '../graphql/queries';
+import useRepositories from '../hooks/useRepositories';
 
 const styles = StyleSheet.create({
   separator: {
@@ -10,38 +9,35 @@ const styles = StyleSheet.create({
   },
 });
 
-const renderItem = ({ item }) => (
-  <RepositoryItem fullName={item.fullName}
-    description={item.description == null ? "" : item.description}
-    language={item.language}
-    forksCount={item.forksCount}
-    stargazersCount={item.stargazersCount}
-    reviewCount={item.reviewCount}
-    ratingAverage={item.ratingAverage}
-    ownerAvatarUrl={item.ownerAvatarUrl}
-  />
-);
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
+
+export const RepositoryListContainer = ({ repositories }) => {
+
+  const renderItem = ({ item }) => (
+    <RepositoryItem repository={item}/>
+  );
+
+  const repositoryNodes = repositories
+    ? repositories.edges.map((edge) => edge.node)
+    : [];
+
+    return (
+      <FlatList
+        data={repositoryNodes}
+        keyExtractor={({ id }) => id}
+        renderItem={renderItem}
+        ItemSeparatorComponent={ItemSeparator}
+      />
+    );
+};
+
 const RepositoryList = () => {
 
-  // eslint-disable-next-line no-unused-vars
-  const { loading, error, data } = useQuery(GET_REPOSITORIES, {
-    fetchPolicy: 'cache-and-network',
-  });
+  const { repositories } = useRepositories();
 
-  const repositoryNodes = data == undefined
-    ? []
-    : data.repositories.edges.map(edge => edge.node);
-
-  return (
-    <FlatList
-      data={repositoryNodes}
-      ItemSeparatorComponent={ItemSeparator}
-      renderItem={renderItem}
-    />
-  );
+  return <RepositoryListContainer repositories={repositories}  />;
 };
 
 export default RepositoryList;

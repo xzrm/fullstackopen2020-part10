@@ -6,6 +6,7 @@ query {
   repositories{
     edges{
       node{
+        id
         fullName
         description
         language
@@ -14,6 +15,7 @@ query {
         reviewCount
         stargazersCount
         ownerAvatarUrl
+        url
       }
     }
   }
@@ -21,11 +23,43 @@ query {
 `;
 
 export const AUTHORIZED_USER = gql`
-query {
-  authorizedUser {
-    id
-    username
+  query {
+    authorizedUser {
+      id
+      username
+    }
   }
-}
+`;
+
+
+export const GET_REPOSITORY = gql`
+  query repository($id: ID!){
+    repository(id: $id ) {
+      id
+      fullName
+      description
+      language
+      forksCount
+      ratingAverage
+      reviewCount
+      stargazersCount
+      ownerAvatarUrl
+      url
+      reviews {
+        edges {
+          node {
+            id
+            text
+            rating
+            createdAt
+            user {
+              id
+              username
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 
