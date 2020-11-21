@@ -104,17 +104,13 @@ const SingleRepository = () => {
 
   const repository = data.repository;
   const reviews = repository.reviews.edges.map((edge) => edge.node);
-  console.log(reviews);
-  console.log(data.repository);
 
   return (
     <FlatList
       data={reviews}
-      
       renderItem={({ item }) => <ReviewItem review={item} />}
       keyExtractor={({ id }) => id}
       ListHeaderComponent={() => <RepositoryItem repository={repository} />}
-    // ...
     />
   );
 };
