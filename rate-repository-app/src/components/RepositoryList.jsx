@@ -86,6 +86,8 @@ export class RepositoryListContainer extends React.Component {
         renderItem={this.renderItem}
         ItemSeparatorComponent={ItemSeparator}
         ListHeaderComponent={this.renderHeader}
+        onEndReached={this.props.onEndReach}
+        onEndReachedThreshold={0.5}
       />
     );
   }
@@ -125,14 +127,22 @@ const RepositoryList = () => {
   }
 
   sortingArgs.searchKeyword = value;
+  sortingArgs.first = 8;
 
-  const { repositories } = useRepositories(sortingArgs);
+  const { repositories, fetchMore } = useRepositories(sortingArgs);
+
+  const onEndReach = () => {
+    fetchMore();
+    console.log("fetching more repositories");
+  };
 
   return <RepositoryListContainer
     repositories={repositories}
     orderSetter={setOrderBy}
     searchQuerySetter={setSearchQuery}
-    searchQuery={searchQuery} />;
+    searchQuery={searchQuery}
+    onEndReach={onEndReach}
+    />;
 };
 
 export default RepositoryList;

@@ -6,7 +6,8 @@ import AppBar from './AppBar';
 import { Route, Switch, Redirect } from 'react-router-native';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
-import CreateReview from './CreateReview';
+import ReviewList from './ReviewList';
+import CreateReviewForm from './CreateReviewForm';
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
@@ -31,7 +32,10 @@ const MainView = () => {
           <SignUp />
         </Route>
         <Route path="/review" exact>
-          <CreateReview />
+          <CreateReviewForm />
+        </Route>
+        <Route path="/myreviews" exact>
+          <ReviewList />
         </Route>
         <Route path="/:repositoryId" exact>
           <SingleRepository />

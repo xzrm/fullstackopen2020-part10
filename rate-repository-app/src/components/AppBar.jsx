@@ -66,6 +66,18 @@ const AppBar = () => {
         {loading
           ? <View></View>
           : data.authorizedUser === null
+            ? <View></View>
+            : <View style={styles.item}>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => history.push('/myreviews')}>
+                <AppBarTab text={"My reviews"} />
+              </TouchableOpacity>
+            </View>
+        }
+        {loading
+          ? <View></View>
+          : data.authorizedUser === null
             ? <View style={styles.item}>
               <Link to="/signin" component={TouchableOpacity} activeOpacity={0.8}>
                 <AppBarTab text={"Sign in"} />

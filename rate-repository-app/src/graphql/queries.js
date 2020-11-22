@@ -7,11 +7,15 @@ query repositories(
   $orderBy: AllRepositoriesOrderBy
   $orderDirection: OrderDirection
   $searchKeyword: String
+  $first: Int
+  $after: String
 ) {
   repositories(
     orderBy: $orderBy
     orderDirection: $orderDirection
     searchKeyword: $searchKeyword
+    first: $first
+    after: $after
   ) {
     edges {
       node {
@@ -27,18 +31,44 @@ query repositories(
         createdAt
         url
       }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      startCursor
+      totalCount
+      hasNextPage
     }
   }
 }
 `;
 
 export const AUTHORIZED_USER = gql`
-  query {
-    authorizedUser {
-      id
-      username
+query getAuthorizedUser($includeReviews: Boolean = false) {
+  authorizedUser {
+    id
+    username
+    reviews @include(if: $includeReviews) {
+      edges {
+        node {
+          id
+          text
+          rating
+          createdAt
+          repository {
+            name
+            ownerName
+            id
+          }
+        }
+        cursor
+      }
+      pageInfo {
+        totalCount
+      }
     }
   }
+}
 `;
 
 
