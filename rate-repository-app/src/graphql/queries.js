@@ -72,34 +72,81 @@ query getAuthorizedUser($includeReviews: Boolean = false) {
 `;
 
 
+// export const GET_REPOSITORY = gql`
+//   query repository($id: ID!){
+//     repository(id: $id ) {
+//       id
+//       fullName
+//       description
+//       language
+//       forksCount
+//       ratingAverage
+//       reviewCount
+//       stargazersCount
+//       ownerAvatarUrl
+//       url
+//       reviews {
+//         edges {
+//           node {
+//             id
+//             text
+//             rating
+//             createdAt
+//             repositoryId
+//             user {
+//               id
+//               username
+//             }
+//           }
+//           cursor
+//         }
+//         pageInfo {
+//           endCursor
+//           startCursor
+//           totalCount
+//           hasNextPage
+//         }
+//       }
+//     }
+//   }
+// `;
+
+
 export const GET_REPOSITORY = gql`
-  query repository($id: ID!){
-    repository(id: $id ) {
-      id
-      fullName
-      description
-      language
-      forksCount
-      ratingAverage
-      reviewCount
-      stargazersCount
-      ownerAvatarUrl
-      url
-      reviews {
-        edges {
-          node {
+query repository($id: ID!, $first: Int, $after: String) {
+  repository(id: $id) {
+    id
+    fullName
+    description
+    language
+    forksCount
+    ratingAverage
+    reviewCount
+    stargazersCount
+    ownerAvatarUrl
+    url
+    reviews(first: $first, after: $after) {
+      edges {
+        node {
+          id
+          text
+          rating
+          createdAt
+          repositoryId
+          user {
             id
-            text
-            rating
-            createdAt
-            user {
-              id
-              username
-            }
+            username
           }
         }
+        cursor
+      }
+      pageInfo {
+        endCursor
+        startCursor
+        totalCount
+        hasNextPage
       }
     }
   }
+}
 `;
-

@@ -98,38 +98,38 @@ const RepositoryList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [value] = useDebounce(searchQuery, 1000);
 
-  var sortingArgs;
+  var args;
 
   switch (orderBy) {
     case 'latest':
-      sortingArgs = {
+      args = {
         orderBy: "CREATED_AT",
         orderDirection: "DESC"
       };
       break;
     case 'highest rated':
-      sortingArgs = {
+      args = {
         orderBy: "RATING_AVERAGE",
         orderDirection: "ASC"
       };
       break;
     case 'lowest rated':
-      sortingArgs = {
+      args = {
         orderBy: "RATING_AVERAGE",
         orderDirection: "DESC"
       };
       break;
     default:
-      sortingArgs = {
+      args = {
         orderBy: "CREATED_AT",
         orderDirection: "DESC"
       };
   }
 
-  sortingArgs.searchKeyword = value;
-  sortingArgs.first = 8;
+  args.searchKeyword = value;
+  args.first = 3;
 
-  const { repositories, fetchMore } = useRepositories(sortingArgs);
+  const { repositories, fetchMore } = useRepositories(args);
 
   const onEndReach = () => {
     fetchMore();

@@ -1,5 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Alert
+} from 'react-native';
 import Text from './Text';
 import theme from '../theme';
 import { format } from 'date-fns';
@@ -91,6 +96,20 @@ const ReviewItem = ({ review, refetch }) => {
 
   const displayButton = location.pathname === `/myreviews` ? true : false;
 
+  const createAlert = () =>
+    Alert.alert(
+      "Delete review",
+      "Are you sure you want to delete this review?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "OK", onPress: () => onPressDeleteItem() }
+      ],
+      { cancelable: false }
+    );
 
   const onPressUpdateHistory = () => {
     history.push(`/${repository.id}`);
@@ -98,9 +117,7 @@ const ReviewItem = ({ review, refetch }) => {
 
 
   const onPressDeleteItem = async () => {
-    console.log("id dd", id);
-    const data = await deleteReview(id);
-    console.log("data", data);
+    await deleteReview(id);
     refetch();
   };
 
@@ -135,20 +152,20 @@ const ReviewItem = ({ review, refetch }) => {
       </View>
 
       <View style={styles.buttonsContainer}>
-          <TouchableOpacity
-            style={displayButton ? styles.button : { display: 'none' }}
-            onPress={onPressUpdateHistory}>
-            <Text
-              color='textPrimaryContrast'
-              fontWeight="bold"> View repository </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={displayButton ? styles.buttonDelete : { display: 'none' }}
-            onPress={onPressDeleteItem}>
-            <Text
-              color='textPrimaryContrast'
-              fontWeight="bold"> Delete review</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={displayButton ? styles.button : { display: 'none' }}
+          onPress={onPressUpdateHistory}>
+          <Text
+            color='textPrimaryContrast'
+            fontWeight="bold"> View repository </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={displayButton ? styles.buttonDelete : { display: 'none' }}
+          onPress={createAlert}>
+          <Text
+            color='textPrimaryContrast'
+            fontWeight="bold"> Delete review</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

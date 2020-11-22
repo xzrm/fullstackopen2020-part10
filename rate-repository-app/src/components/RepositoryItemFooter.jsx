@@ -13,6 +13,8 @@ const styles = StyleSheet.create({
   },
   item: {
     flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 });
 

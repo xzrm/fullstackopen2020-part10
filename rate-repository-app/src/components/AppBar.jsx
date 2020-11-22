@@ -15,13 +15,8 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: Constants.statusBarHeight,
     backgroundColor: theme.colors.appBarBackground,
-    padding: 20,
     flexDirection: 'row',
     alignContent: 'flex-start'
-
-  },
-  item: {
-    paddingRight: 20,
   }
 });
 
@@ -46,7 +41,7 @@ const AppBar = () => {
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
-        <View style={styles.item}>
+        <View>
           <Link to="/" component={TouchableOpacity} activeOpacity={0.8}>
             <AppBarTab text={"Repository"} />
           </Link>
@@ -55,7 +50,7 @@ const AppBar = () => {
           ? <View></View>
           : data.authorizedUser === null
             ? <View></View>
-            : <View style={styles.item}>
+            : <View>
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => history.push('/review')}>
@@ -67,7 +62,7 @@ const AppBar = () => {
           ? <View></View>
           : data.authorizedUser === null
             ? <View></View>
-            : <View style={styles.item}>
+            : <View>
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => history.push('/myreviews')}>
@@ -83,7 +78,7 @@ const AppBar = () => {
                 <AppBarTab text={"Sign in"} />
               </Link>
             </View>
-            : <View style={styles.item}>
+            : <View>
               <TouchableOpacity
                 style={styles.button}
                 onPress={signOut}>
@@ -97,7 +92,7 @@ const AppBar = () => {
           ? <View></View>
           : data.authorizedUser !== null
             ? <View></View>
-            : <View style={styles.item}>
+            : <View>
               <Link to="/signup" component={TouchableOpacity} activeOpacity={0.8}>
                 <AppBarTab text={"Sign up"} />
               </Link>
