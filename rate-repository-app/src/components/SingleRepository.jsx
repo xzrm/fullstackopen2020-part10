@@ -1,27 +1,62 @@
 import React from 'react';
-import { View, FlatList} from 'react-native';
+import { FlatList} from 'react-native';
 import RepositoryItem from './RepositoryItem';
 import { useParams } from 'react-router-native';
 import ReviewItem from './ReviewItem';
-import useSingleRepository from '../hooks/useSingleRepository';
+import { GET_REPOSITORY } from '../graphql/queries';
+import { useQuery } from '@apollo/react-hooks';
 
+const updateQuery = (previousResult, { fetchMoreResult }) => {
+  const nextResult = {
+    repository: {
+      ...fetchMoreResult.repository,
+      reviews: {
+        ...fetchMoreResult.repository.reviews,
+        edges: [
+          ...previousResult.repository.reviews.edges,
+          ...fetchMoreResult.repository.reviews.edges,
+        ],
+      },
+    },
+  };
+
+  return nextResult;
+};
 
 const SingleRepository = () => {
   let { repositoryId } = useParams();
 
-  const { loading, repository,  fetchMore} =
-    useSingleRepository({ id: repositoryId, first: 4 });
+  const variables = { id: repositoryId, first: 4 };
 
+  const { data, loading, fetchMore } = useQuery(GET_REPOSITORY, {
+    fetchPolicy: 'cache-and-network',
+    variables,
+  });
 
-  if (loading) return <View></View>;
+  const repository = data ? data.repository : undefined;
 
-  const reviews = repository.reviews.edges.map((edge) => edge.node);
+  const handleFetchMore = () => {
+    const canFetchMore =
+      !loading && data.repository && data.repository.reviews.pageInfo.hasNextPage;
 
-  const onEndReach = () => {
-    fetchMore();
-    console.log("fetching more reviews");
-    console.log(repository);
+    if (!canFetchMore) {
+      return;
+    }
+
+    fetchMore({
+      query: GET_REPOSITORY,
+      variables: {
+        ...variables,
+        after: data.repository.reviews.pageInfo.endCursor,
+      },
+      updateQuery,
+    });
   };
+
+  const reviews = repository
+  ? repository.reviews.edges.map(({ node }) => node)
+  : [];
+
 
   
   return (
@@ -29,8 +64,11 @@ const SingleRepository = () => {
       data={reviews}
       renderItem={({ item }) => <ReviewItem review={item} />}
       keyExtractor={({ id }) => id}
-      ListHeaderComponent={() => <RepositoryItem repository={repository} />}
-      onEndReached={onEndReach}
+      ListHeaderComponent={() =>
+        repository ? <RepositoryItem repository={repository} /> : null
+      }
+      
+      onEndReached={handleFetchMore}
       onEndReachedThreshold={0.5}
     />
   );
